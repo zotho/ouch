@@ -1,6 +1,6 @@
 //! Contains Zip-specific building and unpacking functions
 
-#[cfg(unix)]
+#[cfg(any(unix, target_family = "wasm"))]
 use std::os::unix::fs::PermissionsExt;
 use std::{
     env,
@@ -84,7 +84,7 @@ where
             }
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_family = "wasm"))]
         unix_set_permissions(&file_path, &file)?;
 
         unpacked_files += 1;
@@ -147,7 +147,7 @@ where
     let options = zip::write::FileOptions::default().large_file(true);
     let output_handle = Handle::from_path(output_path);
 
-    #[cfg(not(unix))]
+    #[cfg(not(any(unix, target_family = "wasm")))]
     let executable = options.unix_permissions(0o755);
 
     // Vec of any filename that failed the UTF-8 check
@@ -206,7 +206,7 @@ where
                 }
             };
 
-            #[cfg(unix)]
+            #[cfg(any(unix, target_family = "wasm"))]
             let options = options.unix_permissions(metadata.permissions().mode());
 
             let entry_name = path.to_str().ok_or_else(|| {
@@ -217,7 +217,7 @@ where
             if metadata.is_dir() {
                 writer.add_directory(entry_name, options)?;
             } else {
-                #[cfg(not(unix))]
+                #[cfg(not(any(unix, target_family = "wasm")))]
                 let options = if is_executable::is_executable(path) {
                     executable
                 } else {
@@ -281,7 +281,7 @@ fn set_last_modified_time(zip_file: &ZipFile, path: &Path) -> crate::Result<()> 
     Ok(())
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_family = "wasm"))]
 fn unix_set_permissions(file_path: &Path, file: &ZipFile) -> crate::Result<()> {
     use std::fs::Permissions;
 

@@ -13,7 +13,10 @@ description = "A command-line utility for easily compressing and decompressing f
 [dependencies]
 atty = "0.2.14"
 bstr = { version = "1.9.0", default-features = false, features = ["std"] }
-bzip2 = "0.4.4"
+
+# bzip2 = "0.4.4"
+bzip2-rs = "0.1.2"
+
 clap = { version = "4.5.0", features = ["derive", "env"] }
 filetime_creation = "0.2"
 flate2 = { version = "1.0.28", default-features = false }
@@ -34,9 +37,9 @@ time = { version = "0.3.34", default-features = false }
 unrar = { version = "0.5.2", optional = true }
 xz2 = "0.1.7"
 zip = { version = "0.6.6", default-features = false, features = ["time"] }
-zstd = { version = "0.13.0", default-features = false }
+zstd = { version = "0.13.0", default-features = false, features = ["wasm"]}
 
-[target.'cfg(not(unix))'.dependencies]
+[target.'cfg(not(any(unix, target_family = "wasm")))'.dependencies]
 is_executable = "1.0.1"
 
 [build-dependencies]

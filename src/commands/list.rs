@@ -47,7 +47,8 @@ pub fn list_archive_contents(
         |format: &CompressionFormat, decoder: Box<dyn Read + Send>| -> crate::Result<Box<dyn Read + Send>> {
             let decoder: Box<dyn Read + Send> = match format {
                 Gzip => Box::new(flate2::read::GzDecoder::new(decoder)),
-                Bzip => Box::new(bzip2::read::BzDecoder::new(decoder)),
+                Bzip => Box::new(bzip2_rs::DecoderReader::new(decoder)),
+                // Bzip => Box::new(bzip2::read::BzDecoder::new(decoder)),
                 Lz4 => Box::new(lz4_flex::frame::FrameDecoder::new(decoder)),
                 Lzma => Box::new(xz2::read::XzDecoder::new(decoder)),
                 Snappy => Box::new(snap::read::FrameDecoder::new(decoder)),

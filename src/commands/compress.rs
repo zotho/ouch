@@ -52,10 +52,13 @@ pub fn compress_files(
                     )
                     .from_writer(encoder),
             ),
-            Bzip => Box::new(bzip2::write::BzEncoder::new(
-                encoder,
-                level.map_or_else(Default::default, |l| bzip2::Compression::new((l as u32).clamp(1, 9))),
-            )),
+            Bzip => {
+                unimplemented!()
+                // Box::new(bzip2::write::BzEncoder::new(
+                //     encoder,
+                //     level.map_or_else(Default::default, |l| bzip2::Compression::new((l as u32).clamp(1, 9))),
+                // ))
+            },
             Lz4 => Box::new(lz4_flex::frame::FrameEncoder::new(encoder).auto_finish()),
             Lzma => Box::new(xz2::write::XzEncoder::new(
                 encoder,
